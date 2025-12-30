@@ -29,7 +29,7 @@ Connect4-AlphaZero/
 - **GEN 1**: 32% Win Rate vs Random
 - **GEN 20**: 95%+ Win Rate (Stable)
 
-[progress_graph.png](progress_graph.png)
+![progress_graph.png](progress_graph.png)
 
 ## Usage
 1. `pip install -r requirements.txt` to install dependencies.
