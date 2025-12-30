@@ -4,7 +4,7 @@ import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader
 import pickle
 import numpy as np
-from model import Connect4Net
+from src.model import Connect4Net
 
 # --- HYPERPARAMETERS ---
 BATCH_SIZE = 64

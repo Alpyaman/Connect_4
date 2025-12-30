@@ -3,8 +3,8 @@ import numpy as np
 import os
 import time
 
-from model import Connect4Net
-import mcts  # Import our new Brain
+from src.model import Connect4Net
+import src.mcts as mcts  # Import our new Brain
 
 # --- CONFIG ---
 MODEL_PATH = "connect4_cnn.pth"

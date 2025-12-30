@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import os
 import matplotlib.pyplot as plt
-from model import Connect4Net
+from src.model import Connect4Net
 import random
 
 # --- CONFIG ---

@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 import pickle
-from model import Connect4Net
-import mcts
+from src.model import Connect4Net
+import src.mcts as mcts
 import os
 from tqdm import tqdm
 

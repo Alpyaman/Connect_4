@@ -1,10 +1,10 @@
-import self_play
+import src.self_play as self_play
 import retrain
 import time
 import os
 import shutil
 import torch
-from model import Connect4Net
+from src.model import Connect4Net
 import pickle
 import random
 from collections import deque

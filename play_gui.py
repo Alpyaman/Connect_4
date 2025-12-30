@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import math
 import sys
-import mcts
-from model import Connect4Net
+import src.mcts as mcts
+from src.model import Connect4Net
 import os
 
 # --- CONFIG ---
