@@ -1,14 +1,17 @@
 import torch
 import numpy as np
-from model import Connect4Net
 import os
+import time
+
+from model import Connect4Net
+import mcts  # Import our new Brain
 
 # --- CONFIG ---
 MODEL_PATH = "connect4_cnn.pth"
 ROW_COUNT = 6
 COLUMN_COUNT = 7
 PLAYER = 1  # You
-AI = -1     # The Model (Matches the training data logic where P2 was negative)
+AI = -1     # The Model
 
 def create_board():
     return np.zeros((ROW_COUNT, COLUMN_COUNT))
@@ -58,57 +61,6 @@ def winning_move(board, piece):
                 return True
     return False
 
-def get_ai_move(board, model, device):
-    best_score = float('inf') # AI wants to MINIMIZE score (make it -1)
-    best_col = random_valid_col(board)
-    
-    # 1. Look at all valid moves
-    valid_cols = [c for c in range(COLUMN_COUNT) if is_valid_location(board, c)]
-    
-    # Check for immediate win or block (Simple Heuristic override)
-    # This helps the AI not miss obvious winning moves that the CNN might be slightly unsure about
-    for col in valid_cols:
-        row = get_next_open_row(board, col)
-        temp_board = board.copy()
-        drop_piece(temp_board, row, col, AI)
-        if winning_move(temp_board, AI):
-            return col # Take the win!
-        
-        # Check if opponent can win next and block
-        temp_board = board.copy()
-        drop_piece(temp_board, row, col, PLAYER)
-        if winning_move(temp_board, PLAYER):
-            return col # Block!
-
-    # 2. If no immediate end, use Neural Net to predict
-    print("AI thinking...", end="")
-    with torch.no_grad():
-        for col in valid_cols:
-            row = get_next_open_row(board, col)
-            
-            # Create a hypothetical board where AI makes this move
-            temp_board = board.copy()
-            drop_piece(temp_board, row, col, AI)
-            
-            # Prepare for CNN: (1, 1, 6, 7)
-            input_tensor = torch.tensor(temp_board, dtype=torch.float32).reshape(1, 1, 6, 7).to(device)
-            
-            # Get prediction
-            score = model(input_tensor).item()
-            print(f"[{col}:{score:.2f}] ", end="")
-            
-            # AI is Player -1, so it wants the LOWEST score
-            if score < best_score:
-                best_score = score
-                best_col = col
-    print("")
-    return best_col
-
-def random_valid_col(board):
-    import random
-    valid_cols = [c for c in range(COLUMN_COUNT) if is_valid_location(board, c)]
-    return random.choice(valid_cols)
-
 def main():
     # Load Model
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -154,8 +106,15 @@ def main():
                 print("Column full! Try another.")
 
         else:
-            # AI Turn
-            col = get_ai_move(board, model, device)
+            # AI Turn (MCTS)
+            print("AI is Thinking (MCTS)...")
+            start_time = time.time()
+            
+            # CALL MCTS HERE
+            col = mcts.mcts_search(board, model, device)
+            
+            end_time = time.time()
+            print(f"AI chose column {col} in {end_time - start_time:.2f} seconds.")
 
             if is_valid_location(board, col):
                 row = get_next_open_row(board, col)
