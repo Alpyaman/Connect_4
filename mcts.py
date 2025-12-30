@@ -4,7 +4,7 @@ import torch
 
 # --- MCTS CONFIG ---
 C_PUCT = 1.414 # Exploration constant
-SIMULATIONS = 200 # Number of simulations per move
+SIMULATIONS = 800 # Number of simulations per move
 
 class Node:
     def __init__(self, board, parent=None, move=None, player=1):
